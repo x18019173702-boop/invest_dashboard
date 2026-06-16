@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Global Macro Dashboard</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --card: #141b2d;
+      --card2: #101728;
+      --text: #e8eefc;
+      --muted: #9aa8c7;
+      --border: #25304a;
+      --accent: #8ab4ff;
+      --green: #6ee7a8;
+      --yellow: #ffd166;
+      --red: #ff7b7b;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      background: radial-gradient(circle at top left, #162344, var(--bg) 42%);
+      color: var(--text);
+    }
+    header, main, footer {
+      max-width: 1280px;
+      margin: auto;
+      padding-left: 22px;
+      padding-right: 22px;
+    }
+    header { padding-top: 28px; padding-bottom: 16px; }
+    h1 { margin: 0 0 8px; font-size: 28px; }
+    .subtitle { color: var(--muted); line-height: 1.6; }
+    .ticker {
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      margin: 8px 0 18px;
+    }
+    main { padding-bottom: 36px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 16px;
+    }
+    .card {
+      grid-column: span 6;
+      background: rgba(20, 27, 45, 0.92);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 12px 30px rgba(0,0,0,.2);
+      min-height: 395px;
+    }
+    .wide { grid-column: span 12; }
+    h2 {
+      font-size: 18px;
+      margin: 0 0 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .tag {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .explain {
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 16px;
+      line-height: 1.7;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+    .temperature-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .temp-card {
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px;
+      min-height: 126px;
+    }
+    .temp-card h3 {
+      margin: 0 0 8px;
+      font-size: 15px;
+      color: var(--text);
+    }
+    .temp-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .signal {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      margin-bottom: 8px;
+      border: 1px solid var(--border);
+    }
+    .riskon { color: var(--green); }
+    .neutral { color: var(--yellow); }
+    .riskoff { color: var(--red); }
+    .legend {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .legend div {
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 13px;
+    }
+    .legend b { color: var(--text); }
+    a { color: var(--accent); text-decoration: none; }
+    footer {
+      padding-top: 0;
+      padding-bottom: 28px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    @media (max-width: 900px) {
+      .card { grid-column: span 12; }
+      .temperature-grid { grid-template-columns: repeat(2, 1fr); }
+      .legend { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 520px) {
+      header, main, footer { padding-left: 14px; padding-right: 14px; }
+      .temperature-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Global Macro Dashboard</h1>
+    <div class="subtitle">全球股指｜美债｜信用债｜贵金属｜加密｜美元与主要汇率。第一屏用于判断市场温度。</div>
+  </header>
+
+  <section class="ticker">
+    <div class="tradingview-widget-container">
+      <div class="tradingview-widget-container__widget"></div>
+      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+      {
+        "symbols": [
+          {"proName":"FOREXCOM:SPXUSD","title":"S&P 500"},
+          {"proName":"NASDAQ:NDX","title":"Nasdaq 100"},
+          {"proName":"TVC:VIX","title":"VIX"},
+          {"proName":"TVC:DXY","title":"DXY"},
+          {"proName":"TVC:US10Y","title":"US 10Y"},
+          {"proName":"AMEX:HYG","title":"HYG"},
+          {"proName":"AMEX:JNK","title":"JNK"},
+          {"proName":"AMEX:HYS","title":"HYS"},
+          {"proName":"TVC:GOLD","title":"Gold"},
+          {"proName":"BITSTAMP:BTCUSD","title":"BTC"},
+          {"proName":"FX:USDJPY","title":"USDJPY"},
+          {"proName":"FX_IDC:USDCNH","title":"USDCNH"}
+        ],
+        "showSymbolLogo": true,
+        "isTransparent": true,
+        "displayMode": "adaptive",
+        "colorTheme": "dark",
+        "locale": "zh_CN"
+      }
+      </script>
+    </div>
+  </section>
+
+  <main>
+    <section class="card wide" style="min-height:auto;">
+      <h2>市场温度 Market Temperature <span class="tag">先看这一屏</span></h2>
+      <div class="temperature-grid">
+        <div class="temp-card">
+          <h3>CNN Fear & Greed Index</h3>
+          <span class="signal neutral">情绪温度计</span>
+          <p>0-25 极度恐惧；25-45 偏恐惧；45-55 中性；55-75 偏贪婪；75-100 极度贪婪。越高越容易追高，越低越容易出现反弹机会。<br><a href="https://www.cnn.com/markets/fear-and-greed" target="_blank">打开 CNN 指数</a></p>
+        </div>
+        <div class="temp-card">
+          <h3>HYG / JNK / HYS</h3>
+          <span class="signal riskon">信用风险偏好</span>
+          <p>高收益债 ETF 上涨，说明市场愿意买低评级债，偏 Risk On；连续下跌通常说明资金在避险。HYS 偏短久期，更接近信用风险本身。</p>
+        </div>
+        <div class="temp-card">
+          <h3>High Yield Spread</h3>
+          <span class="signal riskoff">信用利差</span>
+          <p>利差收窄 = 信用环境好转；利差走阔 = 市场担心违约/衰退。经验上 &lt;4% 偏乐观，4%-6% 中性偏紧，&gt;6% 风险升温，&gt;8% 压力很大。</p>
+        </div>
+        <div class="temp-card">
+          <h3>VIX + DXY + US10Y</h3>
+          <span class="signal neutral">宏观压力组合</span>
+          <p>VIX升、DXY升、10Y升，通常对科技股/加密最不友好；VIX跌、DXY跌、10Y缓和，则风险资产更舒服。</p>
+        </div>
+      </div>
+      <div class="legend">
+        <div><b class="riskon">Risk On：</b>SPX/NDX涨，HYG/JNK/HYS涨，信用利差收窄，DXY/VIX回落，BTC/ETH强。</div>
+        <div><b class="neutral">Neutral：</b>股指震荡，信用债稳定，利差无明显变化，美元和美债没有单边压力。</div>
+        <div><b class="riskoff">Risk Off：</b>股指跌，HYG/JNK/HYS跌，信用利差走阔，VIX/DXY上升，黄金可能强于股票。</div>
+      </div>
+    </section>
+
+    <div class="grid">
+      <section class="card wide">
+        <h2>市场温度主图 <span class="tag">可切换 HYG / JNK / HYS / HY Spread / VIX / DXY</span></h2>
+        <div class="tradingview-widget-container" style="height:520px;">
+          <div id="tv-advanced-chart" style="height:100%;"></div>
+          <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+          <script type="text/javascript">
+            window.addEventListener('load', function() {
+              new TradingView.widget({
+                "autosize": true,
+                "symbol": "AMEX:HYG",
+                "interval": "D",
+                "timezone": "Asia/Shanghai",
+                "theme": "dark",
+                "style": "1",
+                "locale": "zh_CN",
+                "enable_publishing": false,
+                "hide_side_toolbar": false,
+                "allow_symbol_change": true,
+                "watchlist": [
+                  "FOREXCOM:SPXUSD",
+                  "NASDAQ:NDX",
+                  "TVC:VIX",
+                  "TVC:DXY",
+                  "TVC:US02Y",
+                  "TVC:US10Y",
+                  "AMEX:HYG",
+                  "AMEX:JNK",
+                  "AMEX:HYS",
+                  "FRED:BAMLH0A0HYM2",
+                  "TVC:GOLD",
+                  "BITSTAMP:BTCUSD",
+                  "BITSTAMP:ETHUSD",
+                  "FX:USDJPY",
+                  "FX_IDC:USDCNH",
+                  "HKEX:HSTECH",
+                  "TVC:NI225",
+                  "KRX:KOSPI",
+                  "NSE:NIFTY",
+                  "HOSE:VNINDEX",
+                  "BMFBOVESPA:IBOV"
+                ],
+                "container_id": "tv-advanced-chart"
+              });
+            });
+          </script>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>市场温度行情 <span class="tag">信用债 / 波动率 / 美元</span></h2>
+        <div class="tradingview-widget-container">
+          <div class="tradingview-widget-container__widget"></div>
+          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>
+          {
+            "width": "100%",
+            "height": 340,
+            "symbolsGroups": [
+              {
+                "name": "Market Temperature",
+                "symbols": [
+                  {"name":"AMEX:HYG","displayName":"HYG 高收益债"},
+                  {"name":"AMEX:JNK","displayName":"JNK 高收益债"},
+                  {"name":"AMEX:HYS","displayName":"HYS 短久期高收益债"},
+                  {"name":"FRED:BAMLH0A0HYM2","displayName":"High Yield Spread"},
+                  {"name":"TVC:VIX","displayName":"VIX 恐慌指数"},
+                  {"name":"TVC:DXY","displayName":"DXY 美元指数"},
+                  {"name":"TVC:US10Y","displayName":"US 10Y"}
+                ]
+              }
+            ],
+            "showSymbolLogo": true,
+            "colorTheme": "dark",
+            "isTransparent": true,
+            "locale": "zh_CN"
+          }
+          </script>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>美国 / 中国 / 日本 / 韩国 / 印度 <span class="tag">股指</span></h2>
+        <div class="tradingview-widget-container">
+          <div class="tradingview-widget-container__widget"></div>
+          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>
+          {
+            "width": "100%",
+            "height": 340,
+            "symbolsGroups": [
+              {
+                "name": "Major Equity",
+                "symbols": [
+                  {"name":"FOREXCOM:SPXUSD","displayName":"S&P 500"},
+                  {"name":"NASDAQ:NDX","displayName":"Nasdaq 100"},
+                  {"name":"HKEX:HSI","displayName":"恒生指数"},
+                  {"name":"HKEX:HSTECH","displayName":"恒生科技"},
+                  {"name":"TVC:NI225","displayName":"日经225"},
+                  {"name":"KRX:KOSPI","displayName":"KOSPI"},
+                  {"name":"NSE:NIFTY","displayName":"Nifty 50"}
+                ]
+              }
+            ],
+            "showSymbolLogo": true,
+            "colorTheme": "dark",
+            "isTransparent": true,
+            "locale": "zh_CN"
+          }
+          </script>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>新兴市场 <span class="tag">越南 / 巴西 / A股</span></h2>
+        <div class="tradingview-widget-container">
+          <div class="tradingview-widget-container__widget"></div>
+          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>
+          {
+            "width": "100%",
+            "height": 340,
+            "symbolsGroups": [
+              {
+                "name": "Emerging Markets",
+                "symbols": [
+                  {"name":"HOSE:VNINDEX","displayName":"Vietnam VN-Index"},
+                  {"name":"BMFBOVESPA:IBOV","displayName":"Brazil Ibovespa"},
+                  {"name":"SSE:000300","displayName":"沪深300"},
+                  {"name":"SSE:000001","displayName":"上证指数"},
+                  {"name":"SZSE:399006","displayName":"创业板指"}
+                ]
+              }
+            ],
+            "showSymbolLogo": true,
+            "colorTheme": "dark",
+            "isTransparent": true,
+            "locale": "zh_CN"
+          }
+          </script>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>黄金 / 白银 / 原油 / 加密 <span class="tag">避险与弹性</span></h2>
+        <div class="tradingview-widget-container">
+          <div class="tradingview-widget-container__widget"></div>
+          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>
+          {
+            "width": "100%",
+            "height": 340,
+            "symbolsGroups": [
+              {
+                "name": "Commodities & Crypto",
+                "symbols": [
+                  {"name":"TVC:GOLD","displayName":"Gold"},
+                  {"name":"TVC:SILVER","displayName":"Silver"},
+                  {"name":"TVC:UKOIL","displayName":"Brent Oil"},
+                  {"name":"TVC:USOIL","displayName":"WTI Oil"},
+                  {"name":"BITSTAMP:BTCUSD","displayName":"Bitcoin"},
+                  {"name":"BITSTAMP:ETHUSD","displayName":"Ethereum"}
+                ]
+              }
+            ],
+            "showSymbolLogo": true,
+            "colorTheme": "dark",
+            "isTransparent": true,
+            "locale": "zh_CN"
+          }
+          </script>
+        </div>
+      </section>
+
+      <section class="card wide">
+        <h2>汇率 <span class="tag">美元兑日元 / 人民币</span></h2>
+        <div class="tradingview-widget-container">
+          <div class="tradingview-widget-container__widget"></div>
+          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>
+          {
+            "width": "100%",
+            "height": 250,
+            "symbolsGroups": [
+              {
+                "name": "FX",
+                "symbols": [
+                  {"name":"FX:USDJPY","displayName":"USD/JPY"},
+                  {"name":"FX_IDC:USDCNH","displayName":"USD/CNH 离岸人民币"},
+                  {"name":"FX_IDC:USDCNY","displayName":"USD/CNY 在岸人民币"},
+                  {"name":"FX:EURUSD","displayName":"EUR/USD"},
+                  {"name":"FX:GBPUSD","displayName":"GBP/USD"}
+                ]
+              }
+            ],
+            "showSymbolLogo": true,
+            "colorTheme": "dark",
+            "isTransparent": true,
+            "locale": "zh_CN"
+          }
+          </script>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    数据由 TradingView 小组件加载；CNN Fear & Greed Index 因为版权/跨站限制，通常不能稳定嵌入网页，所以放了直达链接。High Yield Spread 使用 FRED 的 ICE BofA US High Yield Option-Adjusted Spread（TradingView 代码：FRED:BAMLH0A0HYM2）。本看板只做观察，不构成投资建议。
+  </footer>
+</body>
+</html>
